@@ -55,8 +55,8 @@ def convert_code_block(html):
                 code_language = code_language.group(1)
             else:
                 code_language = "java"
-            log.debug(code_language)
-            log.debug(code)
+            # log.debug(code_language)
+            # log.debug(code)
 
             """Unescape code after markdown since Confluence macro renders this as is"""
 
@@ -68,7 +68,7 @@ def convert_code_block(html):
                   <ac:plain-text-body><![CDATA[{code}]]></ac:plain-text-body>
                 </ac:structured-macro>
                 """.format(code=html_unescape(code), code_language=code_language)
-            log.debug(conf_macro)
+            # log.debug(conf_macro)
             # conf_macro = textwrap.dedent(
             #     """
             #     <ac:structured-macro ac:name="code" ac:schema-version="1">
