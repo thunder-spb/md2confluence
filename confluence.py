@@ -286,6 +286,17 @@ class Confluence:
             "space": {"key": space},
             "body": {"storage": {"representation": "storage", "value": content}},
             "ancestors": [{"id": str(ancestor_id)}],
+            "metadata":{
+                "properties":{
+                    "content-appearance-draft":{
+                        "value":"full-width"
+                    },
+                    "content-appearance-published":{
+                        "value":"full-width"
+                    }
+                }
+            }
+
         }
 
     def create(

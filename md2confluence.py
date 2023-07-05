@@ -12,8 +12,8 @@ from confluence import Confluence
 # logger configuration
 logging.basicConfig(
     level=logging.INFO,
-    format="%(asctime)s - \
-%(levelname)s - %(funcName)s [%(lineno)d] - %(message)s",
+    # format="%(asctime)s - %(levelname)s - %(filename)s [%(lineno)d] - %(message)s",
+    format="[%(asctime)s %(filename)s->%(funcName)s():%(lineno)s] %(levelname)s: %(message)s"
 )
 log = logging.getLogger(__name__)
 
@@ -49,7 +49,7 @@ def convert_code_block(html):
     if code_blocks:
         for tag in code_blocks:
             code_parsed = re.search(r"<pre><code(.*?)>(.*?)</code></pre>", tag, re.DOTALL)
-            code = code_parsed.group(2)
+            code = code_parsed.group(2).strip()
             code_language = re.search(r".*class=\"language-(.*)\".*", code_parsed.group(1), re.DOTALL)
             if code_language is not None:
                 code_language = code_language.group(1)
