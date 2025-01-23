@@ -12,7 +12,6 @@ from confluence import Confluence
 # logger configuration
 logging.basicConfig(
     level=logging.INFO,
-    # format="%(asctime)s - %(levelname)s - %(filename)s [%(lineno)d] - %(message)s",
     format="[%(asctime)s %(filename)s->%(funcName)s():%(lineno)s] %(levelname)s: %(message)s"
 )
 log = logging.getLogger(__name__)
@@ -32,7 +31,6 @@ def sls(s):
     sls abbreviation is for strip_leading_spaces :)
     """
     return s
-    # return "\n".join([l.strip() for l in s.splitlines()])
 
 
 def convert_code_block(html):
@@ -55,8 +53,6 @@ def convert_code_block(html):
                 code_language = code_language.group(1)
             else:
                 code_language = "java"
-            # log.debug(code_language)
-            # log.debug(code)
 
             """Unescape code after markdown since Confluence macro renders this as is"""
 
@@ -68,20 +64,36 @@ def convert_code_block(html):
                   <ac:plain-text-body><![CDATA[{code}]]></ac:plain-text-body>
                 </ac:structured-macro>
                 """.format(code=html_unescape(code), code_language=code_language)
-            # log.debug(conf_macro)
-            # conf_macro = textwrap.dedent(
-            #     """
-            #     <ac:structured-macro ac:name="code" ac:schema-version="1">
-            #       <ac:parameter ac:name="language">{code_language}</ac:parameter>
-            #       <ac:parameter ac:name="theme">Midnight</ac:parameter>
-            #       <ac:parameter ac:name="linenumbers">true</ac:parameter>
-            #       <ac:plain-text-body><![CDATA[{code}]]></ac:plain-text-body>
-            #     </ac:structured-macro>
-            #     """
-            # ).format(code=html_unescape(code), code_language=code_language)
-
             html = html.replace(tag, conf_macro)
 
+    return html
+
+
+def convert_admonition_block(html):
+    # html = '''
+    # <div class="admonition note">
+    # <p class="admonition-title">my title</p>
+    # <p>You should note that the title will be automatically capitalized.</p>
+    # </div>
+    # '''
+    note_block = textwrap.dedent(
+    """
+        <ac:structured-macro ac:name="{type}" ac:schema-version="1">
+        <ac:parameter ac:name="title">{title}</ac:parameter>
+        <ac:rich-text-body>
+        <p>{body}</p>
+        </ac:rich-text-body>
+        </ac:structured-macro>
+    """
+    )
+    admonition_blocks = re.findall(r'<div class="admonition.*?<p.*?</p>.</div>', html, re.DOTALL)
+    if (admonition_blocks):
+        RE_COMPILE = re.compile(
+        r'<div class="admonition(?: (?P<type>info|danger|important|note))?"(?:.*?)>\n(?:<p class="admonition-title">(?P<title>.*?)</p>\n)?<p>(?P<body>.*?)</p>\n</div>',
+        re.DOTALL)
+        for admonition_block in admonition_blocks:
+            admonition = RE_COMPILE.search(admonition_block).groupdict()
+            html = html.replace(admonition_block, note_block.format(type=admonition.get("type"), title=admonition.get("title"), body=admonition.get("body")))
     return html
 
 
@@ -124,19 +136,6 @@ def create_toc(html):
     </ac:layout-section>
   </ac:layout>
   """.format(content=html, toc=toc_tag)
-#     html = textwrap.dedent(
-#         """<ac:layout>
-#     <ac:layout-section ac:type="two_right_sidebar">
-#       <ac:layout-cell>
-#         {content}
-#       </ac:layout-cell>
-#       <ac:layout-cell>
-#         {toc}
-#       </ac:layout-cell>
-#     </ac:layout-section>
-#   </ac:layout>
-#   """
-#     ).format(content=html, toc=toc_tag)
 
     return html
 
@@ -243,7 +242,9 @@ def parse_args():
         help="Optional. Full link to Jenkins Job. Could be provided via environment variable 'JOB_URL'",
     )
     parser.add_argument(
-        "--repo-url", dest="repo_url", help="Optional. Full link to Git Repository"
+        "--repo-url",
+        dest="repo_url",
+        help="Optional. Full link to Git Repository"
     )
 
     args = parser.parse_args()
@@ -323,6 +324,7 @@ if __name__ == "__main__":
             extensions=[
                 "markdown.extensions.tables",
                 "markdown.extensions.fenced_code",
+                "markdown.extensions.admonition",
             ],
         )
     if not ARGS.title:
@@ -354,6 +356,7 @@ if __name__ == "__main__":
     """
             ).format(repo_url=ARGS.repo_url)
         )
+
     if ARGS.no_notice == False:
         note_block = textwrap.dedent(
             """<ac:structured-macro ac:name="warning" ac:schema-version="1">
@@ -372,6 +375,7 @@ if __name__ == "__main__":
         html = create_toc(html)
 
     html = sls(convert_code_block(html))
+    html = sls(convert_admonition_block(html))
 
     if ARGS.out_file:
         f = open(ARGS.out_file, "w")
