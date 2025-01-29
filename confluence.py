@@ -1,7 +1,6 @@
 import logging
 import json
 import requests
-import os
 import re
 import sys
 
@@ -24,7 +23,7 @@ class Confluence:
         username=None,
         password=None,
         headers=None,
-        loglevel="info",
+        loglevel="INFO",
         _client=None,
     ):
         """Creates a new Confluence API client.
@@ -244,7 +243,7 @@ class Confluence:
             f.write(html)
             f.close()
 
-        return html != confluence_page
+        return self.sls(html) != self.sls(confluence_page)
 
     def _convert_html_to_storage(self, html=None):
         """Dummy conversion from generated xhtml to xhtml via Confluence API call for
@@ -286,6 +285,17 @@ class Confluence:
             "space": {"key": space},
             "body": {"storage": {"representation": "storage", "value": content}},
             "ancestors": [{"id": str(ancestor_id)}],
+            "metadata":{
+                "properties":{
+                    "content-appearance-draft":{
+                        "value":"full-width"
+                    },
+                    "content-appearance-published":{
+                        "value":"full-width"
+                    }
+                }
+            }
+
         }
 
     def create(
