@@ -3,3 +3,8 @@ myvenv/
 .vscode/
 __pycache__
 .mypy_cache/
+*.log
+*.html
+*.sh
+*.md
+!READM*.md
