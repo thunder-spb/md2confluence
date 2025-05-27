@@ -10,4 +10,4 @@ WORKDIR /docs
 
 VOLUME /docs
 
-ENTRYPOINT ["python3", "md2confluence.py"]
+ENTRYPOINT ["python3", "/app/md2confluence.py"]
