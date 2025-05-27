@@ -26,3 +26,4 @@ jobs:
         repository: ${{ env.DH_USER }}/${{ env.IMAGE_NAME }}
         readme-filepath: ./README.md
         short-description: ${{ github.event.repository.description }}
+        enable-url-completion: true
