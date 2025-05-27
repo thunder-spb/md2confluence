@@ -21,9 +21,9 @@ jobs:
     - name: Docker Hub Description
       uses: peter-evans/dockerhub-description@v4
       with:
-        username: ${{ env.DH_USER }}
+        username: ${{ vars.DH_USER }}
         password: ${{ secrets.DH_TOKEN }}
-        repository: ${{ env.DH_USER }}/${{ env.IMAGE_NAME }}
+        repository: ${{ vars.DH_USER }}/${{ env.IMAGE_NAME }}
         readme-filepath: ./README.md
         short-description: ${{ github.event.repository.description }}
         enable-url-completion: true
