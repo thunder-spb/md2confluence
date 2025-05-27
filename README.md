@@ -31,7 +31,7 @@ docker pull ghcr.io/thunder-spb/md2confluence:latest
 or
 
 ```
-docker exec -ti --rm --volume `pwd`:/docs thunderspb/md2confluence:latest -- --help
+docker run -ti --rm --volume `pwd`:/docs thunderspb/md2confluence:latest --help
 ```
 `pwd` is a directory containing your md files.
 
