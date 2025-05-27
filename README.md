@@ -1,12 +1,41 @@
 # Markdown to Confluence
+<p align="left">
+	↗️️ Click at the [bullet list icon] at the top right corner of the Readme visualization for the github generated table of contents.
+</p>
+
+[![GitHub last commit](https://img.shields.io/github/last-commit/thunder-spb/md2confluence?style=flat-square)](https://github.com/thunder-spb/md2confluence/commits/master)
+[![Docker Image Version (latest semver)](https://img.shields.io/docker/v/thunderspb/md2confluence?style=flat-square&sort=semver)](https://hub.docker.com/r/thunderspb/md2confluence/tags)
+[![Docker Image Size (latest semver)](https://img.shields.io/docker/image-size/thunderspb/md2confluence?style=flat-square&sort=semver)](https://hub.docker.com/r/thunderspb/md2confluence)
+[![Docker Pulls](https://img.shields.io/docker/pulls/thunderspb/md2confluence?style=flat-square)](https://hub.docker.com/r/thunderspb/md2confluence)
+[![Docker Automated build](https://img.shields.io/docker/automated/thunderspb/md2confluence?style=flat-square)](https://hub.docker.com/r/thunderspb/md2confluence/builds)
+[![HitCount](http://hits.dwyl.com/thunderspb/md2confluence.svg)](http://hits.dwyl.com/thunderspb/md2confluence)
 
 This script can convert Markdown file and publish it to Confluence through REST API
 
 **Warning.** _The search for an existing page is done by title, so if the title has been changed, the page will not be found and a new one will be created!_
 
 **Note.** We do not support links local images!
+# Run in a docker container
+Image available on DockerHub:
 
-# Preparing to run
+```
+docker pull thunderspb/md2confluence:latest
+```
+
+and on GitHub Container Registry:
+
+```
+docker pull ghcr.io/thunder-spb/md2confluence:latest
+```
+
+or
+
+```
+docker exec -ti --rm --volume `pwd`:/docs thunderspb/md2confluence:latest -- --help
+```
+`pwd` is a directory containing your md files.
+
+# Preparing to run locally
 
 To run this script, you need to install two libraries:
 
