@@ -9,6 +9,9 @@ on:
       - .github/workflows/sync-readme.yml
   workflow_dispatch:
 
+env:
+  IMAGE_NAME: md2confluence
+
 jobs:
   sync-dh-readme:
     runs-on: ubuntu-latest
@@ -20,6 +23,6 @@ jobs:
       with:
         username: ${{ secrets.DH_USER }}
         password: ${{ secrets.DH_TOKEN }}
-        repository: ${{ secrets.DH_USER }}/docker-scanner
+        repository: ${{ secrets.DH_USER }}/${{ env.IMAGE_NAME }}
         readme-filepath: ./README.md
         short-description: ${{ github.event.repository.description }}
